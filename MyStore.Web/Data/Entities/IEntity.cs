@@ -9,7 +9,7 @@ namespace MyStore.Web.Data.Entities
     {
         int Id { get; set; }
 
-        //User CreatedBy { get; set; }
+        User CreatedBy { get; set; }
 
 
         DateTime CreatedDate { get; set; }
@@ -18,6 +18,6 @@ namespace MyStore.Web.Data.Entities
         DateTime? UpdatedDate { get; set; }
 
 
-        //User ModifiedBy { get; set; }
+        User ModifiedBy { get; set; }
     }
 }
