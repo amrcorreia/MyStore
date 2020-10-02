@@ -15,7 +15,7 @@ namespace MyStore.Web.Data.Entities
         DateTime CreatedDate { get; set; }
 
 
-        DateTime UpdatedDate { get; set; }
+        DateTime? UpdatedDate { get; set; }
 
 
         //User ModifiedBy { get; set; }

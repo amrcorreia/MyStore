@@ -39,6 +39,7 @@ namespace MyStore.Web
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            services.AddTransient<SeedDb>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
