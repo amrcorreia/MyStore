@@ -13,6 +13,7 @@ namespace MyStore.Web.Data
 
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
+
         }
     }
 }
