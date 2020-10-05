@@ -14,6 +14,15 @@ namespace MyStore.Web.Data
 
         public DbSet<Country> Countries { get; set; }
 
+        public DbSet<City> Cities { get; set; }
+
+        public DbSet<Order> Orders { get; set; }
+
+        public DbSet<OrderDetail> OrderDetails { get; set; }
+
+        public DbSet<OrderDetailsTemp> OrderDetailsTemp { get; set; }
+
+
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
 
@@ -22,6 +31,14 @@ namespace MyStore.Web.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Product>()
+                .Property(p => p.Price)
+                .HasColumnType("decimal(18,2)");
+
+            modelBuilder.Entity<OrderDetail>()
+                .Property(p => p.Price)
+                .HasColumnType("decimal(18,2)");
+
+            modelBuilder.Entity<OrderDetailsTemp>()
                 .Property(p => p.Price)
                 .HasColumnType("decimal(18,2)");
 

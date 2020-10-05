@@ -8,6 +8,6 @@ namespace MyStore.Web.Helpers
 {
     public interface IImageHelper
     {
-        Task<String> UploadImageAsync(IFormFile imageFile, string folder);
+        Task<string> UploadImageAsync(IFormFile imageFile, string folder);
     }
 }

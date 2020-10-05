@@ -59,6 +59,17 @@ namespace MyStore.Web
                     };
                 });
 
+            services.AddAuthentication()
+                .AddFacebook(options =>
+                {
+                    options.ClientId = Configuration["App:FacebookClientId"];
+                    options.ClientSecret = Configuration["App:FacebookClientSecret"];
+                    options.SignInScheme = IdentityConstants.ExternalScheme;
+                });
+
+
+
+
             //serviço responsável por fazer a ligação à base de dados
             services.AddDbContext<DataContext>(cfg =>
             {
@@ -71,10 +82,21 @@ namespace MyStore.Web
             services.AddScoped<IUserHelper, UserHelper>();
             services.AddScoped<IImageHelper, ImageHelper>();
             services.AddScoped<IConverterHelper, ConverterHelper>();
-            //services.AddScoped<IMailHelper, MailHelper>();
-            //services.AddScoped<IOrderRepository, OrderRepository>();
+            services.AddScoped<IMailHelper, MailHelper>();
+            services.AddScoped<IOrderRepository, OrderRepository>();
 
+            services.Configure<CookiePolicyOptions>(options =>
+            {
+                // This lambda determines whether user consent for non-essential cookies is needed for a given request.
+                options.CheckConsentNeeded = context => true;
+                options.MinimumSameSitePolicy = SameSiteMode.None;
+            });
 
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = "/Account/NotAuthorized";
+                options.AccessDeniedPath = "/Account/NotAuthorized";
+            });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
@@ -92,8 +114,12 @@ namespace MyStore.Web
                 app.UseHsts();
             }
 
+            app.UseStatusCodePagesWithReExecute("/error/{0}");
+
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+            app.UseAuthentication();
             app.UseCookiePolicy();
 
             app.UseMvc(routes =>

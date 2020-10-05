@@ -1,0 +1,89 @@
+﻿<!DOCTYPE html>
+<html class="no-js">
+<head>
+    <meta charset="utf-8">
+    <title>Shop | eCommerce</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href='http://fonts.googleapis.com/css?family=Lato:300,400,700' rel='stylesheet'>
+    <!-- Syntax Highlighter -->
+    <link rel="stylesheet" type="text/css" href="~/layoutAdmin/syntax-highlighter/styles/shCore.css" media="all">
+    <link rel="stylesheet" type="text/css" href="~/layoutAdmin/syntax-highlighter/styles/shThemeDefault.css" media="all">
+    <!-- Font Awesome CSS-->
+    <link rel="stylesheet" href="~/layoutAdmin/css/font-awesome.min.css">
+    <!-- Normalize/Reset CSS-->
+    <link rel="stylesheet" href="~/layoutAdmin/css/normalize.min.css">
+    <link rel="stylesheet" href="~/layoutAdmin/css/main.css">
+    <link rel="stylesheet" href="~/layout/css/fontawesome-all.min.css">
+    <!-- CSS here -->
+    @*<environment include="Development">
+        <link rel="stylesheet" href="~/layout/css/bootstrap.min.css">
+        <link rel="stylesheet" href="~/layout/css/owl.carousel.min.css">
+        <link rel="stylesheet" href="~/layout/css/slicknav.css">
+        <link rel="stylesheet" href="~/layout/css/flaticon.css">
+        <link rel="stylesheet" href="~/layout/css/progressbar_barfiller.css">
+        <link rel="stylesheet" href="~/layout/css/lightslider.min.css">
+        <link rel="stylesheet" href="~/layout/css/price_rangs.css">
+        <link rel="stylesheet" href="~/layout/css/gijgo.css">
+        <link rel="stylesheet" href="~/layout/css/animate.min.css">
+        <link rel="stylesheet" href="~/layout/css/animated-headline.css">
+        <link rel="stylesheet" href="~/layout/css/magnific-popup.css">
+        <link rel="stylesheet" href="~/layout/css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="~/layout/css/themify-icons.css">
+        <link rel="stylesheet" href="~/layout/css/slick.css">
+        <link rel="stylesheet" href="~/layout/css/nice-select.css">
+        <link rel="stylesheet" href="~/layout/css/style.css">
+    </environment>
+    <environment exclude="Development">
+        <link rel="stylesheet" href="~/layout/css/bootstrap.min.css">
+        <link rel="stylesheet" href="~/layout/css/owl.carousel.min.css">
+        <link rel="stylesheet" href="~/layout/css/slicknav.css">
+        <link rel="stylesheet" href="~/layout/css/flaticon.css">
+        <link rel="stylesheet" href="~/layout/css/progressbar_barfiller.css">
+        <link rel="stylesheet" href="~/layout/css/lightslider.min.css">
+        <link rel="stylesheet" href="~/layout/css/price_rangs.css">
+        <link rel="stylesheet" href="~/layout/css/gijgo.css">
+        <link rel="stylesheet" href="~/layout/css/animate.min.css">
+        <link rel="stylesheet" href="~/layout/css/animated-headline.css">
+        <link rel="stylesheet" href="~/layout/css/magnific-popup.css">
+        <link rel="stylesheet" href="~/layout/css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="~/layout/css/themify-icons.css">
+        <link rel="stylesheet" href="~/layout/css/slick.css">
+        <link rel="stylesheet" href="~/layout/css/nice-select.css">
+        <link rel="stylesheet" href="~/layout/css/style.css">
+    </environment>*@
+</head>
+
+<body id="welcome">
+    <aside class="left-sidebar">
+        <div class="logo">
+            <a href="#welcome">
+                <h1>Furniture Shop</h1>
+                <h3 style="color:darkgray">eCommerce</h3>
+            </a>
+        </div>
+        <nav class="left-nav">
+            <ul id="nav">
+                <li><a asp-area="" asp-controller="Users" asp-action="Index">Users</a></li>
+                <li><a asp-area="" asp-controller="Products" asp-action="Index" class="nav-link">Products</a></li>
+                <li><a asp-area="" asp-controller="Orders" asp-action="Index" class="nav-link">Orders</a></li>
+            </ul>
+        </nav>
+    </aside>
+    @RenderBody()
+
+    <!-- Essential JavaScript Libraries
+    ==============================================-->
+    <script type="text/javascript" src="~/layoutAdmin/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="~/layoutAdmin/js/jquery.nav.js"></script>
+    <script type="text/javascript" src="~/layoutAdmin/syntax-highlighter/scripts/shCore.js"></script>
+    <script type="text/javascript" src="~/layoutAdmin/syntax-highlighter/scripts/shBrushXml.js"></script>
+    <script type="text/javascript" src="~/layoutAdmin/syntax-highlighter/scripts/shBrushCss.js"></script>
+    <script type="text/javascript" src="~/layoutAdmin/syntax-highlighter/scripts/shBrushJScript.js"></script>
+    <script type="text/javascript" src="~/layoutAdmin/syntax-highlighter/scripts/shBrushPhp.js"></script>
+    <script type="text/javascript">SyntaxHighlighter.all()</script>
+    <script type="text/javascript" src="~/layoutAdmin/js/custom.js"></script>
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

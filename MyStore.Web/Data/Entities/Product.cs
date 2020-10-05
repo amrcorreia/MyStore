@@ -12,7 +12,6 @@ namespace MyStore.Web.Data.Entities
 
         public User CreatedBy { get; set; }
 
-
         public DateTime CreatedDate { get; set; }
 
 

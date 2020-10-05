@@ -32,12 +32,50 @@ namespace MyStore.Web.Controllers
             _converterHelper = converterHelper;
         }
 
+        /// <summary>
+        /// Get all products
+        /// </summary>
+        /// <returns></returns>
         // GET: Products
         public IActionResult Index()
         {
             return View(_productRepository.GetAll().OrderBy(p => p.Name));
         }
 
+        /// <summary>
+        /// Get all products
+        /// </summary>
+        /// <returns></returns>
+        public IActionResult Shop()
+        {
+            return View(_productRepository.GetAll().OrderBy(p => p.Name));
+        }
+
+        /// <summary>
+        /// Get all products
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IActionResult> SeeDetails(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var product = await _productRepository.GetByIdAsync(id.Value);
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            return View(product);
+        }
+
+        /// <summary>
+        /// Get product details by id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         // GET: Products/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -55,6 +93,10 @@ namespace MyStore.Web.Controllers
             return View(product);
         }
 
+        /// <summary>
+        /// Get EDIT product
+        /// </summary>
+        /// <returns></returns>
         // GET: Products/Create
         [Authorize(Roles = "Admin")]
         public IActionResult Create()
@@ -62,6 +104,11 @@ namespace MyStore.Web.Controllers
             return View();
         }
 
+        /// <summary>
+        /// Post CREATE product
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         // POST: Products/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -86,7 +133,11 @@ namespace MyStore.Web.Controllers
             return View(model);
         }
        
-
+        /// <summary>
+        /// Get EDIT product by id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         // GET: Products/Edit/5
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
@@ -107,7 +158,11 @@ namespace MyStore.Web.Controllers
             return View(view);
         }
               
-
+        /// <summary>
+        /// Post EDIT product
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         // POST: Products/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -147,34 +202,36 @@ namespace MyStore.Web.Controllers
             return View(model);
         }
 
-        // GET: Products/Delete/5
+        /// <summary>
+        /// DELETE product by id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Delete(int? id)
+        // POST: Products/Delete/5
+        public async Task<IActionResult> DeleteItem(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
-
-            var product = await _productRepository.GetByIdAsync(id.Value);
-            if (product == null)
+            try
             {
-                return NotFound();
+                await _productRepository.DeleteProductAsync(id.Value);
             }
+            catch (Exception exception)
+            {
 
-            return View(product);
+                ModelState.AddModelError(string.Empty, exception.Message);
+            }
+            
+            return this.RedirectToAction("Index");
         }
 
-        // POST: Products/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var product = await _productRepository.GetByIdAsync(id);
-            await _productRepository.DeleteAsync(product);
-            return RedirectToAction(nameof(Index));
-        }
-
+        /// <summary>
+        /// Page NOT FOUND - 404
+        /// </summary>
+        /// <returns></returns>
         public IActionResult ProductNotFound()
         {
             return View();

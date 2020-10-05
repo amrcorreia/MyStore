@@ -1,0 +1,82 @@
+﻿@model MyStore.Web.Models.ChangeUserAdminViewModel
+@{
+    ViewData["Title"] = "Register";
+}
+
+    <section>
+        <div class="row">
+            <div class="col-md-4 offset-md-4">
+                <form method="post">
+                    <div asp-validation-summary="ModelOnly"></div>
+                    <br />
+                    <h2>Update User</h2>
+                    <br />
+                    <div class="form-group">
+                        <label asp-for="Name">Name</label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-warning"></span>
+                    </div>
+
+                    <div class="single-input-fields">
+                        <label asp-for="VAT" style="font-size:15px">Value Added Tax</label>
+                        <input asp-for="VAT" class="form-control" placeholder="Enter Value Added Tax" type="number" style="height:35px" min="100000000" max="999999999" />
+                        <span asp-validation-for="VAT" class="text-warning"></span>
+                    </div>
+
+                    <div class="single-input-fields">
+                        <label asp-for="Username" style="font-size:15px">Email</label>
+                        <input asp-for="Username" class="form-control" placeholder="Enter email" type="email" style="height:35px" />
+                        <span asp-validation-for="Username" class="text-warning"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="checkbox">
+                            <label>
+                                <input asp-for="EmailConfirmed" /> @Html.DisplayNameFor(model => model.EmailConfirmed)
+                            </label>
+                        </div>
+                    </div>
+
+                    <br />
+                    <div class="text-success">@ViewBag.UserMessage</div>
+                    <br />
+                    <div class="form-group">
+                        <input type="submit" value="Update" class="btn btn-primary" />
+                        <a asp-action="ChangePassword" class="btn btn-success">Change Password</a>
+                    </div>
+
+
+                </form>
+            </div>
+        </div>
+    </section>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#CountryId").change(function () {
+                $("#CityId").empty();
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("GetCitiesAsync")',
+                    dataType: 'json',
+                    data: { countryId: $("#CountryId").val() },
+                    success: function (cities) {
+                        debugger;
+                        $("#CityId").append('<option value="0">(Select a city...)</option>');
+                        $.each(cities, function (i, city) {
+                            $("#CityId").append('<option value="'
+                                + city.id + '">'
+                                + city.name + '</option>');
+                        });
+                    },
+                    error: function (ex) {
+                        alert('Failed to retrieve cities.' + ex);
+                    }
+                });
+                return false;
+            })
+        });
+    </script>
+}

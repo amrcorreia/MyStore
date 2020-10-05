@@ -12,5 +12,12 @@ namespace MyStore.Web.Data.Repositories
         IQueryable GetAllWithUsers();
 
         IEnumerable<SelectListItem> GetComboProducts();
+
+        /// <summary>
+        /// delete product by id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        Task DeleteProductAsync(int id);
     }
 }

@@ -21,6 +21,23 @@ namespace MyStore.Web.Data.Repositories
             return _context.Products.Include(p => p.User);
         }
 
+        /// <summary>
+        /// Delete product by id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task DeleteProductAsync(int id)
+        {
+            var product = await _context.Products.FindAsync(id);
+            if (product == null)
+            {
+                return;
+            }
+
+            _context.Products.Remove(product);
+            await _context.SaveChangesAsync();
+        }
+
         public IEnumerable<SelectListItem> GetComboProducts()
         {
             var list = _context.Products.Select(p => new SelectListItem

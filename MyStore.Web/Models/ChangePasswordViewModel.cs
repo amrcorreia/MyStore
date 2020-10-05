@@ -12,12 +12,14 @@ namespace MyStore.Web.Models
         [Display(Name = "Current Password")]
         public string OldPassword { get; set; }
 
+
         [Required]
         [Display(Name = "New Password")]
         public string NewPassword { get; set; }
 
+
         [Required]
-        [Compare("Password")]
+        [Compare("NewPassword")]
         public string Confirm { get; set; }
     }
 }

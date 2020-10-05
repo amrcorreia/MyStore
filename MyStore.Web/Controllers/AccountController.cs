@@ -20,20 +20,21 @@ namespace MyStore.Web.Controllers
     {
         
         private readonly IUserHelper _userHelper;
-        //private readonly ICountryRepository _countryRepository;
+        private readonly ICountryRepository _countryRepository;
         private readonly IConfiguration _configuration;
-        //private readonly IMailHelper _mailHelper;
+        private readonly IMailHelper _mailHelper;
 
         public AccountController(
             IUserHelper userHelper,
-            //ICountryRepository countryRepository,
-            IConfiguration configuration
+            ICountryRepository countryRepository,
+            IConfiguration configuration,
+            IMailHelper mailHelper
             )
         {
             _userHelper = userHelper;
-            //_countryRepository = countryRepository;
+            _countryRepository = countryRepository;
             _configuration = configuration;
-            //_mailHelper = mailHelper;
+            _mailHelper = mailHelper;
         }
 
         public IActionResult Login()
@@ -93,46 +94,76 @@ namespace MyStore.Web.Controllers
 
                     user = new User
                     {
-                        FirstName = model.FirstName,
-                        LastName = model.LastName,
+                        Name = model.Name,
                         Email = model.Username,
                         UserName = model.Username,
-                        Address = model.Address,
-                        PhoneNumber = model.PhoneNumber,
+                        //Address = model.Address,
+                        //PhoneNumber = model.PhoneNumber,
+                        VAT = model.VAT
                         //CityId = model.CityId,
                         //City = city
                     };
 
-                    var result = await _userHelper.AddUserAsync(user, model.Password); //guarda o user
+                    var result = await _userHelper.AddUserAsync(user, model.Password);
                     if (result != IdentityResult.Success)
                     {
-                        this.ModelState.AddModelError(string.Empty, "The user couldn't be created.");
+                        this.ModelState.AddModelError(string.Empty, "* The user couldn't be created.");
                         return this.View(model);
                     }
 
-                    var myToken = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
-                    var tokenLink = this.Url.Action("ConfirmEmail", "Account", new
+                    if (model.VAT > 99999999 && model.VAT < 299999999)
                     {
-                        userid = user.Id,
-                        token = myToken
-                    }, protocol: HttpContext.Request.Scheme);
+                        User userInDB = await _userHelper.GetUserByEmailAsync(user.UserName);
+                        await _userHelper.AddUserToRoleAsync(userInDB, "Customer");
+                                             
+                        var myToken = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
 
-                    //_mailHelper.SendMail(model.Username, "Email confirmation", $"<h1>Email Confirmation</h1>" +
-                    //    $"To allow the user, " +
-                    //    $"plase click in this link:</br></br><a href = \"{tokenLink}\">Confirm Email</a>");
-                    //this.ViewBag.Message = "The instructions to allow your user has been sent to email.";
 
+                        var tokenLink = this.Url.Action("ConfirmEmailCustomer", "Account", new
+                        {
+                            userid = user.Id,
+                            token = myToken
+                        }, protocol: HttpContext.Request.Scheme);
+
+                        _mailHelper.SendMail(model.Username, "Furniture - Email confirmation", $"<h1>Customer Email Confirmation</h1>" +
+                            $"<br/>" +
+                            $"Welcome to Furniture, you password is {model.Password}. Please change you password as soon as possible." +
+                            $"To allow the user, " +
+                            $"please click in this link:</br></br><a href = \"{tokenLink}\">Confirm Email</a>");
+                        this.ViewBag.Message = "The instructions to allow your user has been sent to email.";
+                    }
+                    else if (model.VAT > 499999999 && model.VAT <= 999999999)
+                    {
+                        User userInDB = await _userHelper.GetUserByEmailAsync(user.UserName);
+                        await _userHelper.AddUserToRoleAsync(userInDB, "Resale");
+
+                        var myToken = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
+
+
+                        var tokenLink = this.Url.Action("ConfirmEmailResale", "Account", new
+                        {
+                            userid = user.Id,
+                            token = myToken
+                        }, protocol: HttpContext.Request.Scheme);
+
+                        _mailHelper.SendMail(model.Username, "Furniture - Email confirmation", $"<h1>Resale Email Confirmation</h1>" +
+                            $"<br/>" +
+                            $"Welcome to Furniture, you password is {model.Password}. Please change you password as soon as possible." +
+                            $"To allow the user, " +
+                            $"please click in this link:</br></br><a href = \"{tokenLink}\">Confirm Email</a>");
+                        this.ViewBag.Message = "The instructions to allow your user has been sent to email.";
+                    }
 
                     return this.View(model);
                 }
 
-                this.ModelState.AddModelError(string.Empty, "The username is already registered.");
+                this.ModelState.AddModelError(string.Empty, "* The username is already registered.");
             }
 
             return this.View(model);
         }
 
-        public async Task<IActionResult> ConfirmEmail(string userId, string token)
+        public async Task<IActionResult> ConfirmEmailCustomer(string userId, string token)
         {
             if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(token))
             {
@@ -154,6 +185,29 @@ namespace MyStore.Web.Controllers
             return View();
         }
 
+        public async Task<IActionResult> ConfirmEmailResale(string userId, string token)
+        {
+            if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(token))
+            {
+                return this.NotFound();
+            }
+
+            var user = await _userHelper.GetUserByIdAsync(userId);
+            if (user == null)
+            {
+                return this.NotFound();
+            }
+
+            var result = await _userHelper.ConfirmEmailAsync(user, token);
+            if (!result.Succeeded)
+            {
+                return this.NotFound();
+            }
+
+            return View();
+        }
+
+
         public async Task<IActionResult> ChangeUser()
         {
             var user = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
@@ -161,10 +215,9 @@ namespace MyStore.Web.Controllers
 
             if (user != null)
             {
-                model.FirstName = user.FirstName;
-                model.LastName = user.LastName;
-                model.Address = user.Address;
-                model.PhoneNumber = user.PhoneNumber;
+                model.Name = user.Name;
+                model.VAT = user.VAT;
+                model.Username = user.UserName;                
 
                 //var city = await _countryRepository.GetCityAsync(user.CityId);
                 //if (city != null)
@@ -185,8 +238,6 @@ namespace MyStore.Web.Controllers
             return this.View(model);
         }
 
-
-
         [HttpPost]
         public async Task<IActionResult> ChangeUser(ChangeUserViewModel model)
         {
@@ -197,10 +248,9 @@ namespace MyStore.Web.Controllers
                 {
                     //var city = await _countryRepository.GetCityAsync(model.CityId);
 
-                    user.FirstName = model.FirstName;
-                    user.LastName = model.LastName;
-                    user.Address = model.Address;
-                    user.PhoneNumber = model.PhoneNumber;
+                    user.Name = model.Name;
+                    user.VAT = model.VAT;
+                    user.UserName = model.Username;
                     //user.CityId = model.CityId;
                     //user.City = city;
 
@@ -216,7 +266,7 @@ namespace MyStore.Web.Controllers
                 }
                 else
                 {
-                    this.ModelState.AddModelError(string.Empty, "User no found.");
+                    this.ModelState.AddModelError(string.Empty, "User not found.");
                 }
             }
 
@@ -324,10 +374,10 @@ namespace MyStore.Web.Controllers
                     "Account",
                     new { token = myToken }, protocol: HttpContext.Request.Scheme);
 
-                //_mailHelper.SendMail(model.Email, "Shop Password Reset", $"<h1>Shop Password Reset</h1>" +
-                //$"To reset the password click in this link:</br></br>" +
-                //$"<a href = \"{link}\">Reset Password</a>");
-                //this.ViewBag.Message = "The instructions to recover your password has been sent to email.";
+                _mailHelper.SendMail(model.Email, "Shop Password Reset", $"<h1>Shop Password Reset</h1>" +
+                $"To reset the password click in this link:</br></br>" +
+                $"<a href = \"{link}\">Reset Password</a>");
+                this.ViewBag.Message = "The instructions to recover your password has been sent to email.";
                 return this.View();
             }
 
@@ -341,7 +391,7 @@ namespace MyStore.Web.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModelcs model)
         {
             var user = await _userHelper.GetUserByEmailAsync(model.UserName);
             if (user != null)
@@ -371,5 +421,72 @@ namespace MyStore.Web.Controllers
         //    var country = await _countryRepository.GetCountryWithCitiesAsync(countryId);
         //    return this.Json(country.Cities.OrderBy(c => c.Name));
         //}
+
+        public async Task<IActionResult> ChangeUserAdmin()
+        {
+            var user = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
+            var model = new ChangeUserAdminViewModel();
+
+            if (user != null)
+            {
+                model.Name = user.Name;
+                model.VAT = user.VAT;
+                model.Username = user.UserName;
+                model.EmailConfirmed = user.EmailConfirmed;
+
+                //var city = await _countryRepository.GetCityAsync(user.CityId);
+                //if (city != null)
+                //{
+                //    var country = await _countryRepository.GetCountryAsync(city);
+                //    if (country != null)
+                //    {
+                //        model.CountryId = country.Id;
+                //        model.Cities = _countryRepository.GetComboCities(country.Id);
+                //        model.Countries = _countryRepository.GetComboCountries();
+                //        model.CityId = user.CityId;
+                //    }
+                //}
+            }
+
+            //model.Cities = _countryRepository.GetComboCities(model.CountryId);
+            //model.Countries = _countryRepository.GetComboCountries();
+            return this.View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangeUserAdmin(ChangeUserAdminViewModel model)
+        {
+            if (this.ModelState.IsValid)
+            {
+                var user = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
+                if (user != null)
+                {
+                    //var city = await _countryRepository.GetCityAsync(model.CityId);
+
+                    user.Name = model.Name;
+                    user.VAT = model.VAT;
+                    user.UserName = model.Username;
+                    model.EmailConfirmed = user.EmailConfirmed;
+                    //user.CityId = model.CityId;
+                    //user.City = city;
+
+                    var respose = await _userHelper.UpdateUserAsync(user);
+                    if (respose.Succeeded)
+                    {
+                        this.ViewBag.UserMessage = "User updated!";
+                    }
+                    else
+                    {
+                        this.ModelState.AddModelError(string.Empty, respose.Errors.FirstOrDefault().Description);
+                    }
+                }
+                else
+                {
+                    this.ModelState.AddModelError(string.Empty, "User not found.");
+                }
+            }
+
+            return this.View(model);
+        }
     }
 }

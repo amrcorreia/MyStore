@@ -4,69 +4,74 @@
     ViewData["Title"] = "Details";
 }
 
-<h2>Details</h2>
+    <section>
+        <div style="margin:auto; width:1100px; height:300px">
+            <div>
+                <br />
+                <h2>Product</h2>
+                <br />
+                <dl class="dl-horizontal">
+                    <dd>
+                        @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                        {
+                            <img src=" @Url.Content(Model.ImageUrl)" alt="Image" style="width:150px;height:150px;max-height100%;height:auto" />
+                        }
+                        else
+                        {
+                            <img src="~/images/Products/ImageNA.png" alt="true" style="width:100px;height:150px;max-height:100%;height:auto" />
+                        }
+                    </dd>
+                    <dt>
 
-<div>
-    <h4>Product</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.CreatedDate)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.CreatedDate)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.UpdatedDate)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.UpdatedDate)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Price)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Price)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.ImageUrl)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.ImageUrl)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.LastPurchase)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.LastPurchase)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.LastSale)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.LastSale)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.IsAvailable)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.IsAvailable)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Stock)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Stock)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+                    </dt>
+                    <dd>
+                        <strong>@Html.DisplayNameFor(model => model.Name) :</strong> @Html.DisplayFor(model => model.Name)
+                    </dd>
+                    <dt>
+
+                    </dt>
+                    <dd>
+                        <strong>@Html.DisplayNameFor(model => model.Price) :</strong> @Html.DisplayFor(model => model.Price)
+                    </dd>
+                    <dt>
+
+                    </dt>
+                    <dt>
+                       
+                    </dt>
+                    <dd>
+                        <strong>@Html.DisplayNameFor(model => model.LastPurchase) :</strong> @Html.DisplayFor(model => model.LastPurchase)
+                    </dd>
+                    <dt>
+                        
+                    </dt>
+                    <dd>
+                        <strong>@Html.DisplayNameFor(model => model.LastSale) :</strong> @Html.DisplayFor(model => model.LastSale)
+                    </dd>
+                    <dt>
+                        
+                    </dt>
+                    <dd>
+                        <strong>@Html.DisplayNameFor(model => model.IsAvailable) :</strong> @Html.DisplayFor(model => model.IsAvailable)
+                    </dd>
+                    <dt>
+                        
+                    </dt>
+                    <dd>
+                        <strong>@Html.DisplayNameFor(model => model.Stock) :</strong> @Html.DisplayFor(model => model.Stock)
+                    </dd>
+                </dl>
+            </div>
+            <div>
+                <a asp-action="Edit" asp-route-id="@Model.Id" class=" btn btn-warning">Edit</a>
+                <a asp-action="Index" class=" btn btn-success">Back to List</a>
+            </div>
+        </div>
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+    </section>
+

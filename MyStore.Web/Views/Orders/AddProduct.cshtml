@@ -1,0 +1,47 @@
+﻿@model MyStore.Web.Models.AddItemViewModel
+
+@{
+    ViewData["Title"] = "AddProduct";
+}
+<section>
+    <div style="margin:auto; width:1100px; height:300px">
+        <br />
+        <h2>Add Product</h2>
+        <h4>To Order</h4>
+        <br />
+        <div class="row">
+            <div class="col-md-5">
+                <form asp-action="AddProduct">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="ProductId" class="control-label"></label>
+                        <br />
+                        <select asp-for="ProductId" asp-items="Model.Products" class="form-control"></select>
+                        <span asp-validation-for="ProductId" class="text-danger"></span>
+                        <br />
+                    </div>
+                    <br />
+                    <div class="form-group">
+                        <label asp-for="Quantity" class="control-label"></label>
+                        <input asp-for="Quantity" class="form-control" type="number" />
+                        <span asp-validation-for="Quantity" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="submit" value="Create" class="btn btn-primary" />
+                        <a asp-action="Index" class="btn btn-success">Back to List</a>
+                    </div>
+                </form>
+                <br />
+            </div>
+            <br />
+        </div>
+
+    </div>
+    <br />
+    </section>
+       
+
+        @section Scripts {
+            @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+        }

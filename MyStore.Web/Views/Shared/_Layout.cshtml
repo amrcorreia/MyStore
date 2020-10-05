@@ -1,98 +1,307 @@
-﻿<!DOCTYPE html>
-<html>
+﻿<!doctype html>
+<html class="no-js" lang="zxx">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - MyStore.Web</title>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Shop | eCommerce</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="manifest" href="site.webmanifest">
+    <link rel="shortcut icon" type="image/x-icon" href="~/layout/img/favicon.ico">
 
+    <!-- CSS here -->
     <environment include="Development">
-        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
-        <link rel="stylesheet" href="~/css/site.css" />
+        <link rel="stylesheet" href="~/layout/css/bootstrap.min.css">
+        <link rel="stylesheet" href="~/layout/css/owl.carousel.min.css">
+        <link rel="stylesheet" href="~/layout/css/slicknav.css">
+        <link rel="stylesheet" href="~/layout/css/flaticon.css">
+        <link rel="stylesheet" href="~/layout/css/progressbar_barfiller.css">
+        <link rel="stylesheet" href="~/layout/css/lightslider.min.css">
+        <link rel="stylesheet" href="~/layout/css/price_rangs.css">
+        <link rel="stylesheet" href="~/layout/css/gijgo.css">
+        <link rel="stylesheet" href="~/layout/css/animate.min.css">
+        <link rel="stylesheet" href="~/layout/css/animated-headline.css">
+        <link rel="stylesheet" href="~/layout/css/magnific-popup.css">
+        <link rel="stylesheet" href="~/layout/css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="~/layout/css/themify-icons.css">
+        <link rel="stylesheet" href="~/layout/css/slick.css">
+        <link rel="stylesheet" href="~/layout/css/nice-select.css">
+        <link rel="stylesheet" href="~/layout/css/style.css">
     </environment>
     <environment exclude="Development">
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
-              asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
-              asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
-        <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
+        <link rel="stylesheet" href="~/layout/css/bootstrap.min.css">
+        <link rel="stylesheet" href="~/layout/css/owl.carousel.min.css">
+        <link rel="stylesheet" href="~/layout/css/slicknav.css">
+        <link rel="stylesheet" href="~/layout/css/flaticon.css">
+        <link rel="stylesheet" href="~/layout/css/progressbar_barfiller.css">
+        <link rel="stylesheet" href="~/layout/css/lightslider.min.css">
+        <link rel="stylesheet" href="~/layout/css/price_rangs.css">
+        <link rel="stylesheet" href="~/layout/css/gijgo.css">
+        <link rel="stylesheet" href="~/layout/css/animate.min.css">
+        <link rel="stylesheet" href="~/layout/css/animated-headline.css">
+        <link rel="stylesheet" href="~/layout/css/magnific-popup.css">
+        <link rel="stylesheet" href="~/layout/css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="~/layout/css/themify-icons.css">
+        <link rel="stylesheet" href="~/layout/css/slick.css">
+        <link rel="stylesheet" href="~/layout/css/nice-select.css">
+        <link rel="stylesheet" href="~/layout/css/style.css">
     </environment>
 </head>
 <body>
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">MyStore.Web</a>
-            </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
-                    <li><a asp-area="" asp-controller="Products" asp-action="Index">Products</a></li>
-                    @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("Admin"))
-                    {
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin<b class="caret"></b></a>
-                            <ul class="dropdown-menu">
-                                <li><a asp-area="" asp-controller="" asp-action="">Users</a></li>
-                                <li><a asp-area="" asp-controller="" asp-action="">Roles</a></li>
-                                <li><a asp-area="" asp-controller="Countries" asp-action="Index">Countries</a></li>
-                            </ul>
-                        </li>
-                    }
-                </ul>
-                @*Login*@
-                <ul class="nav navbar-nav navbar-right">
-                    @if (this.User.Identity.IsAuthenticated)
-                    {
-                        <li><a asp-area="" asp-controller="Account" asp-action="ChangeUser">@this.User.Identity.Name</a></li>
-                        <li><a asp-area="" asp-controller="Account" asp-action="Logout">Logout</a></li>
-                    }
-                    else
-                    {
-                        <li><a asp-area="" asp-controller="Account" asp-action="Login">Login</a></li>
-                    }
-                </ul>
+    <!-- ? Preloader Start -->
+    <div id="preloader-active">
+        <div class="preloader d-flex align-items-center justify-content-center">
+            <div class="preloader-inner position-relative">
+                <div class="preloader-circle"></div>
+                <div class="preloader-img pere-text">
+                    <img src="~/layout/img/logo/loder.png" alt="">
+                </div>
             </div>
         </div>
-    </nav>
+    </div>
+    <!-- Preloader Start-->
+    <header>
+        <!-- Header Start -->
+        <div class="header-area">
+            <div class="main-header header-sticky">
+                <div class="container-fluid">
+                    <div class="row menu-wrapper align-items-center justify-content-between">
+                        <div class="header-left d-flex align-items-center">
+                            <!-- Logo -->
+                            <div class="logo">
 
-    <partial name="_CookieConsentPartial" />
 
-    <div class="container body-content">
-        @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; 2020 - MyStore.Web</p>
-        </footer>
+                                <a asp-area="" asp-controller="Home" asp-action="Index"><img src="~/layout/img/logo/logo.png" alt=""></a>
+                            </div>
+                            <!-- Logo-2 -->
+                            <div class="logo2">
+                                <a asp-area="" asp-controller="Home" asp-action="Index"><img src="~/layout/img/logo/logo2.png" alt=""></a>
+                            </div>
+                            <!-- Main-menu -->
+                            <div class="main-menu  d-none d-lg-block">
+                                <nav>
+                                    <ul id="navigation">
+
+
+                                        @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("Admin"))
+                                        {
+                                    <li><a asp-area="" asp-controller="Administration" asp-action="Index" class="nav-link">Users</a></li>
+                                                    <li><a asp-area="" asp-controller="Products" asp-action="Index" class="nav-link">Products</a></li>
+                                                                    <li><a asp-area="" asp-controller="Orders" asp-action="Index" class="nav-link">Orders</a></li>
+                                                                                    @*<li><a asp-area="" asp-controller="Home" asp-action="Contact" class="nav-link">Contact</a></li>*@
+                                                                                                    @*<li><a asp-area="" asp-controller="Administration" asp-action="Index" class="nav-link" target="_blank">Admin Area</a></li>*@
+
+                                                                                                                    @if (this.User.Identity.IsAuthenticated)
+                                                                                                                    {
+                                                                                                    <li><a asp-area="" asp-controller="Account" asp-action="ChangeUser" class="nav-link">@this.User.Identity.Name</a></li>
+                                                                                                                        <li><a asp-area="" asp-controller="Account" asp-action="Logout" class="nav-link">Logout</a></li> }
+                                                                                                                                        else
+                                                                                                                                        {
+                                                                                                                        <li><a asp-area="" asp-controller="Account" asp-action="Login" class="account-btn">Login</a></li>}}
+                                                                                                                else if (this.User.Identity.IsAuthenticated && this.User.IsInRole("Customer"))
+                                                                                                                {
+                                                                                                    <li><a asp-area="" asp-controller="Home" asp-action="Index" class="nav-link">Home</a></li>
+                                                                                                                    <li><a asp-area="" asp-controller="Products" asp-action="Shop" class="nav-link">Shop</a></li>
+                                                                                                                                    <li><a asp-area="" asp-controller="Home" asp-action="About" class="nav-link">About</a></li>
+                                                                                                                                                    <li><a asp-area="" asp-controller="Home" asp-action="Contact" class="nav-link">Contact</a></li>
+
+
+                                                                                                                                                                    @if (this.User.Identity.IsAuthenticated)
+                                                                                                                                                                    {
+                                                                                                                                                    <li><a asp-area="" asp-controller="Account" asp-action="ChangeUser" class="account-btn">Welcome, @this.User.Identity.Name</a></li>
+                                                                                                                                                                        <li><a asp-area="" asp-controller="Account" asp-action="Logout" class="nav-link">Logout</a></li>
+ }
+                                                                                                                                                                    else
+                                                                                                                                                                    {
+                                                                                                                                                    <li><a asp-area="" asp-controller="Account" asp-action="Login" class="account-btn">Login</a></li>
+}
+                                                                                                                                                                                    <li>
+                                                                                                                                                                                        <div class="card-stor">
+                                                                                                                                                                                            <img src="~/layout/img/icon/card.svg" alt="">
+                                                                                                                                                                                            <span>0</span>
+                                                                                                                                                                                        </div>
+                                                                                                                                                                                    </li>
+}
+
+                                        else
+                                        {
+                                        <li><a asp-area="" asp-controller="Home" asp-action="Index" class="nav-link">Home</a></li>
+                                        <li><a asp-area="" asp-controller="Products" asp-action="Shop" class="nav-link">Shop</a></li>
+                                        <li><a asp-area="" asp-controller="Home" asp-action="About" class="nav-link">About</a></li>
+                                        <li><a asp-area="" asp-controller="Home" asp-action="Contact" class="nav-link">Contact</a></li>
+
+
+                                        @if (this.User.Identity.IsAuthenticated)
+                                        {
+                                    <li><a asp-area="" asp-controller="Account" asp-action="ChangeUser" class="account-btn">@this.User.Identity.Name</a></li>
+                                                    <li><a asp-area="" asp-controller="Account" asp-action="Logout" class="nav-link">Logout</a></li>
+ }
+                                                else
+                                                {
+                                    <li><a asp-area="" asp-controller="Account" asp-action="Login" class="account-btn">Login</a></li>
+}
+                                        <li>
+                                            <div class="card-stor">
+                                                <img src="~/layout/img/icon/card.svg" alt="">
+                                                <span>0</span>
+                                            </div>
+                                        </li>}
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Header End -->
+    </header>
+    @RenderBody()
+    <!-- header end -->
+    <!--? New Arrival End -->
+    <!-- Popular Locations End -->
+    <!--? Services Area Start -->
+    <div class="categories-area section-padding40 gray-bg">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3 col-md-6 col-sm-6">
+                    <div class="single-cat mb-50 wow fadeInUp" data-wow-duration="1s" data-wow-delay=".2s">
+                        <div class="cat-icon">
+                            <img src="~/layout/img/icon/services1.svg" alt="" />
+                        </div>
+                        <div class="cat-cap">
+                            <h5>Fast & Free Delivery</h5>
+                            <p>Free delivery on all orders</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 col-sm-6">
+                    <div class="single-cat mb-50 wow fadeInUp" data-wow-duration="1s" data-wow-delay=".2s">
+                        <div class="cat-icon">
+                            <img src="~/layout/img/icon/services2.svg" alt="" />
+                        </div>
+                        <div class="cat-cap">
+                            <h5>Secure Payment</h5>
+                            <p>Free delivery on all orders</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 col-sm-6">
+                    <div class="single-cat mb-50 wow fadeInUp" data-wow-duration="1s" data-wow-delay=".4s">
+                        <div class="cat-icon">
+                            <img src="~/layout/img/icon/services3.svg" alt="" />
+                        </div>
+                        <div class="cat-cap">
+                            <h5>Money Back Guarantee</h5>
+                            <p>Free delivery on all orders</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 col-sm-6">
+                    <div class="single-cat mb-50 wow fadeInUp" data-wow-duration="1s" data-wow-delay=".5s">
+                        <div class="cat-icon">
+                            <img src="~/layout/img/icon/services4.svg" alt="" />
+                        </div>
+                        <div class="cat-cap">
+                            <h5>Online Support</h5>
+                            <p>Free delivery on all orders</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @*? Services Area End*@
+
+    <footer>
+        <div class="footer-wrapper">
+            <!-- Footer Start-->
+            <div class="footer-area footer-padding">
+                <div class="container ">
+                    <div class="row justify-content-between">
+                        <!-- logo -->
+                        <div class="footer-logo mb-35">
+                            <a asp-area="" asp-controller="Home" asp-action="Index"><img src="~/layout/img/logo/logo2_footer.png" alt=""></a>
+                        </div>
+
+                        <!-- social -->
+                        <div class="footer-social">
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                            <a href="https://bit.ly/sai4ull"><i class="fab fa-facebook-f"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- footer-bottom area -->
+            <div class="footer-bottom-area">
+                <div class="container">
+                    <div class="footer-border">
+                        <div class="row d-flex align-items-center">
+                            <div class="col-xl-12 ">
+                                <div class="footer-copy-right text-center">
+                                    <p>
+                                        <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                                        Copyright &copy;
+                                        <script>document.write(new Date().getFullYear());</script> All rights reserved | Made by <a href="https://cinel.pt" target="_blank">Andreia Correia TPSI - CET46</a>
+                                        <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Footer End-->
+        </div>
+
+    </footer>
+    <!-- Scroll Up -->
+    <div id="back-top">
+        <a title="Go to Top" href="#"> <i class="fas fa-level-up-alt"></i></a>
     </div>
 
-    <environment include="Development">
-        <script src="~/lib/jquery/dist/jquery.js"></script>
-        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
-        <script src="~/js/site.js" asp-append-version="true"></script>
-    </environment>
-    <environment exclude="Development">
-        <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.3.1.min.js"
-                asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
-                asp-fallback-test="window.jQuery"
-                crossorigin="anonymous"
-                integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT">
-        </script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"
-                asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
-                asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
-                crossorigin="anonymous"
-                integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd">
-        </script>
-        <script src="~/js/site.min.js" asp-append-version="true"></script>
-    </environment>
+    <!-- JS here -->
+    <!-- Jquery, Popper, Bootstrap -->
+    <script src="~/layout/js/vendor/modernizr-3.5.0.min.js"></script>
+    <script src="~/layout/js/vendor/jquery-1.12.4.min.js"></script>
+    <script src="~/layout/js/popper.min.js"></script>
+    <script src="~/layout/js/bootstrap.min.js"></script>
 
+    <!-- Slick-slider , Owl-Carousel ,slick-nav -->
+    <script src="~/layout/js/owl.carousel.min.js"></script>
+    <script src="~/layout/js/slick.min.js"></script>
+    <script src="~/layout/js/jquery.slicknav.min.js"></script>
+
+    <!-- One Page, Animated-HeadLin, Date Picker , price, light-slider -->
+    <script src="~/layout/js/wow.min.js"></script>
+    <script src="~/layout/js/animated.headline.js"></script>
+    <script src="~/layout/js/jquery.magnific-popup.js"></script>
+    <script src="~/layout/js/gijgo.min.js"></script>
+    <script src="~/layout/js/lightslider.min.js"></script>
+    <script src="~/layout/js/price_rangs.js"></script>
+
+    <!-- Nice-select, sticky,Progress -->
+    <script src="~/layout/js/jquery.nice-select.min.js"></script>
+    <script src="~/layout/js/jquery.sticky.js"></script>
+    <script src="~/layout/js/jquery.barfiller.js"></script>
+
+    <!-- counter , waypoint,Hover Direction -->
+    <script src="~/layout/js/jquery.counterup.min.js"></script>
+    <script src="~/layout/js/waypoints.min.js"></script>
+    <script src="~/layout/js/jquery.countdown.min.js"></script>
+    <script src="~/layout/js/hover-direction-snake.min.js"></script>
+
+    <!-- contact js -->
+    <script src="~/layout/js/contact.js"></script>
+    <script src="~/layout/js/jquery.form.js"></script>
+    <script src="~/layout/js/jquery.validate.min.js"></script>
+    <script src="~/layout/js/mail-script.js"></script>
+    <script src="~/layout/js/jquery.ajaxchimp.min.js"></script>
+
+    <!-- Jquery Plugins, main Jquery -->
+    <script src="~/layout/js/plugins.js"></script>
+    <script src="~/layout/js/main.js"></script>
     @RenderSection("Scripts", required: false)
 </body>
 </html>
