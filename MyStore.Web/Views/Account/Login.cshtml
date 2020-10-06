@@ -2,58 +2,104 @@
 @{
     ViewData["Title"] = "Login";
 }
-    <section>
-        <main class="login-bg">
-            <!-- login Area Start -->
-            <div class="login-form-area">
-                <div class="container">
-                    <div class="row justify-content-center">
-                        <div class="col-xl-7 col-lg-8">
-                            <div class="login-form">
-                                <!-- Login Heading -->
-                                <div class="login-heading">
-                                    <span>Login</span>
-                                    <p>Enter Login details to get access</p>
-                                </div>
-                                <!-- Single Input Fields -->
-                                <form method="post">
-                                    <div asp-validation-summary="ModelOnly"></div>
-                                    <div class="input-box">
-                                        <div class="single-input-fields">
-                                            <label asp-for="Username">Username or Email Address</label>
-                                            <input asp-for="Username" type="text" placeholder="Username / Email address">
-                                            <span asp-validation-for="Username" class="text-warning"></span>
-                                            <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
-                                        </div>
-                                        <div class="single-input-fields">
-                                            <label asp-for="Password">Password</label>
-                                            <input asp-for="Password" type="password" placeholder="Enter Password">
-                                            <span asp-validation-for="Password" class="text-warning"></span>
-                                        </div>
-                                        <div class="single-input-fields login-check">
-                                            <input asp-for="RememberMe" type="checkbox" id="fruit1" name="keep-log">
-                                            <label asp-for="RememberMe" for="fruit1">Remember Me?</label>
-                                            <span asp-validation-for="RememberMe" class="text-warning"></span>
-
-
-                                            <a asp-action="RecoverPassword" class="f-right">Forgot Password?</a>
-                                        </div>
-                                    </div>
-                                    <!-- form Footer -->
-                                    <div class="login-footer">
-                                        <p>Don’t have an account? <a asp-action="Register">Sign Up</a>  here</p>
-                                        <button type="submit" class="submit-btn3">Login</button>
-                                    </div>
-                                </form>
+<section>
+    <main class="login-bg">
+        <!-- login Area Start -->
+        <div class="login-form-area">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-xl-7 col-lg-8">
+                        <div class="login-form">
+                            <!-- Login Heading -->
+                            <div class="login-heading">
+                                <span>Login</span>
+                                <p>Enter Login details to get access</p>
                             </div>
+
+                            <!-- Single Input Fields -->
+                            <form method="post">
+                                <div asp-validation-summary="ModelOnly"></div>
+                                <div class="input-box">
+
+                                    <div class="single-input-fields">
+                                        <label asp-for="Username">Username or Email Address</label>
+                                        <input asp-for="Username" type="text" placeholder="Username / Email address">
+                                        <span asp-validation-for="Username" class="text-warning"></span>
+                                        <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+                                    </div>
+                                    <div class="single-input-fields">
+                                        <label asp-for="Password">Password</label>
+                                        <input asp-for="Password" type="password" placeholder="Enter Password">
+                                        <span asp-validation-for="Password" class="text-warning"></span>
+                                    </div>
+                                    <div class="single-input-fields login-check">
+                                        <input asp-for="RememberMe" type="checkbox" id="fruit1" name="keep-log">
+                                        <label asp-for="RememberMe" for="fruit1">Remember Me?</label>
+                                        <span asp-validation-for="RememberMe" class="text-warning"></span>
+
+                                        <a asp-action="RecoverPassword" class="f-right">Forgot Password?</a>
+                                    </div>
+                                </div>
+
+                                <div class="login-footer">
+                                    <p>Don’t have an account? <a asp-action="Register">Sign Up</a>  here</p>
+                                    <button type="submit" class="submit-btn3">Login</button>
+                                </div>
+                            </form>
+                            @if (Model.ExternalLogins.Count > 0)
+                            {
+                        <form method="post" asp-action="ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl">
+                            <div class="social-auth-links text-center mb-3">
+
+                                @foreach (var provider in Model.ExternalLogins)
+                                {
+                                    @if (provider.Name == "Facebook")
+                                    {
+                                        <button data-onsuccess="onSignIn"
+                                                class="genric-btn primary small" type="submit" value="@provider.Name"
+                                                title="Log in using your @provider.DisplayName account" name="provider">
+                                            <i class="fa fa-facebook-square"></i> Facebook
+                                        </button> }
+                                    else if (provider.Name == "Google")
+                                    {
+                                        <button data-onsuccess="onSignIn"
+                                                type="submit" class="genric-btn primary small" value="@provider.Name"
+                                                title="Log in using your @provider.DisplayName account" name="provider">
+                                            <i class="fa fa-google"></i> Google
+                                        </button>}}
+
+                            </div>
+                            </form>            }
                         </div>
                     </div>
                 </div>
             </div>
             <!-- login Area End -->
-        </main>
-    </section>
+    </main>
+</section>
+
+@*@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}*@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+
+    <script>
+        addEventListener("load", function () {
+            setTimeout(hideURLbar, 0);
+        }, false);
+        function hideURLbar() {
+            window.scrollTo(0, 1);
+        }
+        function onSignIn(googleUser) {
+            var profile = googleUser.getBasicProfile();
+            console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+            console.log('Name: ' + profile.getName());
+            console.log('Image URL: ' + profile.getImageUrl());
+            console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+        }
+    </script>
 }

@@ -22,9 +22,12 @@ namespace MyStore.Web
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        private readonly IHostingEnvironment _environment;
+
+        public Startup(IConfiguration configuration, IHostingEnvironment environment)
         {
             Configuration = configuration;
+            _environment = environment;
         }
 
         public IConfiguration Configuration { get; }
@@ -59,13 +62,39 @@ namespace MyStore.Web
                     };
                 });
 
-            services.AddAuthentication()
+
+
+            if (_environment.IsDevelopment())
+            {
+
+                services
+               .AddAuthentication()
+
+               .AddGoogle(options =>
+               {
+                   options.ClientId = Configuration["App:GoogleClientId"];
+                   options.ClientSecret = Configuration["App:GoogleClientSecret"];
+                   options.SignInScheme = IdentityConstants.ExternalScheme;
+               })
+
+
+
+
                 .AddFacebook(options =>
                 {
                     options.ClientId = Configuration["App:FacebookClientId"];
                     options.ClientSecret = Configuration["App:FacebookClientSecret"];
                     options.SignInScheme = IdentityConstants.ExternalScheme;
                 });
+
+                //.AddCookie(options =>
+                //{
+                //    options.Cookie.Name = ".AspNet.ExternalCookie";
+                //    options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
+                //    options.LoginPath = new PathString("/Account/Login");
+                //    options.LogoutPath = new PathString("/Account/Logout");
+                //});
+            }
 
 
 
@@ -95,7 +124,7 @@ namespace MyStore.Web
             services.ConfigureApplicationCookie(options =>
             {
                 options.LoginPath = "/Account/NotAuthorized";
-                options.AccessDeniedPath = "/Account/NotAuthorized";
+                //options.AccessDeniedPath = "/Account/NotAuthorized";
             });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);

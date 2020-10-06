@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -23,46 +24,88 @@ namespace MyStore.Web.Controllers
         private readonly ICountryRepository _countryRepository;
         private readonly IConfiguration _configuration;
         private readonly IMailHelper _mailHelper;
+        private readonly SignInManager<User> _signInManager;
+        private readonly UserManager<User> _userManager;
 
         public AccountController(
             IUserHelper userHelper,
             ICountryRepository countryRepository,
             IConfiguration configuration,
-            IMailHelper mailHelper
+            IMailHelper mailHelper,
+            SignInManager<User> signInManager,
+            UserManager<User> userManager
             )
         {
             _userHelper = userHelper;
             _countryRepository = countryRepository;
             _configuration = configuration;
             _mailHelper = mailHelper;
+            _signInManager = signInManager;
+            _userManager = userManager;
         }
 
-        public IActionResult Login()
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> Login(string returnUrl)
         {
-            if (this.User.Identity.IsAuthenticated)
+            LoginViewModel model = new LoginViewModel
             {
-                return this.RedirectToAction("Index", "Home");
-            }
-            return this.View();
+                ReturnUrl = returnUrl,
+                ExternalLogins =
+                (await _signInManager
+                .GetExternalAuthenticationSchemesAsync()).ToList()
+            };
+
+            return View(model);
         }
 
+        [AllowAnonymous]
         [HttpPost]
-        public async Task<IActionResult> Login(LoginViewModel model)
+        public async Task<IActionResult> Login(LoginViewModel model, string returnUrl)
         {
+            model.ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+
             if (ModelState.IsValid)
             {
+                var user = await _userHelper.GetUserByEmailAsync(model.Username);
+
+                if (user != null && !user.EmailConfirmed &&
+                             (await _userManager.CheckPasswordAsync(user, model.Password)))
+                {
+                    ModelState.AddModelError(string.Empty, "Email not confirmed yet");
+                    return View(model);
+                }
+
                 var result = await _userHelper.LoginAsync(model);
+
                 if (result.Succeeded)
                 {
-                    if (this.Request.Query.Keys.Contains("ReturnUrl"))
+                    if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
                     {
-                        return this.Redirect(this.Request.Query["ReturnUrl"].First());
+                        return Redirect(returnUrl);
                     }
-                    return this.RedirectToAction("Index", "Home");
+                    else
+                    {
+                        return RedirectToAction("index", "home");
+                    }
                 }
+
+                ModelState.AddModelError(string.Empty, "Invalid Login Attempt");
             }
-            this.ModelState.AddModelError(string.Empty, "Failed to login.");
-            return this.View(model);
+
+            return View(model);
+            //var result = await _userHelper.LoginAsync(model);
+            //if (result.Succeeded)
+            //{
+            //    if (this.Request.Query.Keys.Contains("ReturnUrl"))
+            //    {
+            //        return this.Redirect(this.Request.Query["ReturnUrl"].First());
+            //    }
+            //    return this.RedirectToAction("Index", "Home");
+            //}
+        //}
+        //    this.ModelState.AddModelError(string.Empty, "Failed to login.");
+        //    return this.View(model);
         }
 
         public async Task<IActionResult> Logout()
@@ -488,5 +531,91 @@ namespace MyStore.Web.Controllers
 
             return this.View(model);
         }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public IActionResult ExternalLogin(string provider, string returnUrl)
+        {
+            var redirectUrl = Url.Action("ExternalLoginCallback", "Account",
+                new { ReturnUrl = returnUrl });
+
+            var properties =
+                _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl, _userManager.GetUserId(User));
+
+            return new ChallengeResult(provider, properties);
+        }
+
+        [AllowAnonymous]
+        public async Task<IActionResult> ExternalLoginCallback(string returnUrl = null, string remoteError = null)
+        {
+            returnUrl = returnUrl ?? Url.Content("~/");
+
+            LoginViewModel loginViewModel = new LoginViewModel
+            {
+                ReturnUrl = returnUrl,
+                ExternalLogins =
+                (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList()
+            };
+
+            if (remoteError != null)
+            {
+                ModelState.AddModelError(string.Empty,
+                    $"Error from external provider: {remoteError}");
+
+                return View("Login", loginViewModel);
+            }
+
+            var info = await _signInManager.GetExternalLoginInfoAsync();
+
+            if (info == null)
+            {
+                return View("Login", loginViewModel);
+            }
+
+            var signResult = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider,
+                info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
+
+            if (signResult.Succeeded)
+            {
+                return LocalRedirect(returnUrl);
+            }
+
+            else if (signResult.IsLockedOut)
+            {
+                return RedirectToAction(nameof(RecoverPassword));
+            }
+
+            else
+            {
+                var email = info.Principal.FindFirstValue(ClaimTypes.Email);
+                if (email != null)
+                {
+                    var user = await _userHelper.GetUserByEmailAsync(email);
+                    if (user == null)
+                    {
+                        user = new User
+                        {
+                            UserName = info.Principal.FindFirstValue(ClaimTypes.Email),
+                            Email = info.Principal.FindFirstValue(ClaimTypes.Email)
+                        };
+
+                        await _userManager.CreateAsync(user);
+                    }
+
+                    await _userManager.AddLoginAsync(user, info);
+                    await _signInManager.SignInAsync(user, isPersistent: false);
+
+                    return LocalRedirect(returnUrl);
+                }
+
+                ViewBag.ErrorTittle = $"Error claim not received from: {info.LoginProvider}";
+
+                return View("Error");
+            }
+        }
+
+
+
     }
 }
