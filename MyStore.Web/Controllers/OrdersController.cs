@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyStore.Web.Data.Repositories;
+using MyStore.Web.Helpers;
 using MyStore.Web.Models;
 
 namespace ShopCET46.Web.Controllers
@@ -14,14 +15,16 @@ namespace ShopCET46.Web.Controllers
     {
         private readonly IOrderRepository _orderRepository;
         private readonly IProductRepository _productRepository;
+        private readonly IMailHelper _mailHelper;
 
         public OrdersController(IOrderRepository orderRepository,
-            IProductRepository productRepository)
+            IProductRepository productRepository,
+            IMailHelper mailHelper)
         {
             _orderRepository = orderRepository;
             _productRepository = productRepository;
+            _mailHelper = mailHelper;
         }
-
 
 
         public async Task<IActionResult> Index()
@@ -30,11 +33,22 @@ namespace ShopCET46.Web.Controllers
             return View(model);
         }
 
-
+        public IActionResult Checkout()
+        {
+            
+            
+            
+            return View();
+        }
 
         public async Task<IActionResult> Create()
         {
             var model = await _orderRepository.GetDetailTempsAsync(this.User.Identity.Name);
+            if ((this.User.Identity.Name) == null)
+            {
+                return this.RedirectToAction("Login", "Account");
+            }
+            
             return View(model);
         }
 
@@ -114,12 +128,29 @@ namespace ShopCET46.Web.Controllers
 
         public async Task<IActionResult> ConfirmOrder()
         {
-            var response = await _orderRepository.ConfirmOrderAsync(this.User.Identity.Name);
-            if (response)
+            var createdOrder = await _orderRepository.ConfirmOrderAsync(User.Identity.Name);
+
+            if (createdOrder != null)
             {
-                return this.RedirectToAction("Index");
+                try
+                {
+                    EmailPDF generator = new EmailPDF();
+
+                    var pdfByteArray = generator.PdfGenerate(createdOrder, User.Identity.Name);
+
+                    _mailHelper.SendEmailPlusAttachment(User.Identity.Name, "Order - Plants Store",
+                    "Thank you for choosing us.\n Please, check your email box! \n The purchase order follows attached", pdfByteArray);
+
+                    ViewBag.Message = "Thank you for choosing us!\n\n\nPlease check your email box.";
+
+                }
+                catch (Exception exception)
+                {
+                    ModelState.AddModelError(string.Empty, exception.Message);
+                }
             }
-            return this.RedirectToAction("Create");
+
+            return RedirectToAction("Create");
         }
 
         [Authorize]

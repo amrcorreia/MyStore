@@ -43,7 +43,8 @@ namespace MyStore.Web.Data.Entities
         public double Quantity => this.Items == null ? 0 : this.Items.Sum(i => i.Quantity);
 
 
-        public decimal Value => this.Items == null ? 0 : this.Items.Sum(i => i.Value);
+        public decimal Value { get; set; }
+
 
         [Required]
         [DisplayName("Order date")]

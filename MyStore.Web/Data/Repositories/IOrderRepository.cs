@@ -19,10 +19,16 @@ namespace MyStore.Web.Data.Repositories
 
         Task DeleteOrderAsync(int id);
 
-        Task<bool> ConfirmOrderAsync(string userName);
+        Task<Order> ConfirmOrderAsync(string userName);
 
         Task DeliverOrderAsync(DeliverViewModel model);
 
         Task<Order> GetOrderAsync(int id);
+
+
+        Task AddProductToOrderAsync(int productId, User user);
+
+
+        Task AddProductToOrderTempAsync(int productId);
     }
 }

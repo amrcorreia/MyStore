@@ -135,8 +135,8 @@ namespace MyStore.Web.Data
             {
                 var user = _context.Users.FirstOrDefault();
                 this.AddProduct("Sofa model 1", user);
-                //this.AddProduct("Repolho", user);
-                //this.AddProduct("Cenoura", user);
+                this.AddProduct("Sofa model 2", user);
+                this.AddProduct("Sofa model 3", user);
                 await _context.SaveChangesAsync();
             }
         }

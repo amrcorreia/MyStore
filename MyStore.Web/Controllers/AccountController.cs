@@ -55,7 +55,6 @@ namespace MyStore.Web.Controllers
                 (await _signInManager
                 .GetExternalAuthenticationSchemesAsync()).ToList()
             };
-
             return View(model);
         }
 

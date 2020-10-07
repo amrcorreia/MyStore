@@ -82,6 +82,7 @@ namespace MyStore.Web.Data.Repositories
                     Product = product,
                     Quantity = model.Quantity,
                     User = user,
+                    
                 };
                 _context.OrderDetailsTemp.Add(orderDetailTemp);
             }
@@ -137,12 +138,12 @@ namespace MyStore.Web.Data.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task<bool> ConfirmOrderAsync(string userName)
+        public async Task<Order> ConfirmOrderAsync(string userName)
         {
             var user = await _userHelper.GetUserByEmailAsync(userName);
             if (user == null)
             {
-                return false;
+                return null;
             }
 
             var orderTmps = await _context.OrderDetailsTemp
@@ -152,7 +153,7 @@ namespace MyStore.Web.Data.Repositories
 
             if (orderTmps == null || orderTmps.Count == 0)
             {
-                return false;
+                return null;
             }
 
             var details = orderTmps.Select(o => new OrderDetail
@@ -162,11 +163,14 @@ namespace MyStore.Web.Data.Repositories
                 Quantity = o.Quantity
             }).ToList();
 
+            decimal orderTotalValue = details.Sum(i => i.Value);
+
             var order = new Order
             {
                 OrderDate = DateTime.UtcNow,
                 User = user,
-                Items = details
+                Items = details,
+                Value = user.IsResale ? orderTotalValue * (decimal)0.8 : orderTotalValue
             };
 
             _context.Orders.Add(order);
@@ -174,7 +178,7 @@ namespace MyStore.Web.Data.Repositories
             _context.Orders.Add(order);
             _context.OrderDetailsTemp.RemoveRange(orderTmps);
             await _context.SaveChangesAsync();
-            return true;
+            return order;
         }
 
         public async Task DeliverOrderAsync(DeliverViewModel model)
@@ -194,5 +198,77 @@ namespace MyStore.Web.Data.Repositories
         {
             return await _context.Orders.FindAsync(id);
         }
+
+
+        public async Task AddProductToOrderAsync(int productId, User user)
+        {
+
+            var product = await _context.Products.FindAsync(productId);
+            if (product == null)
+            {
+                return;
+            }
+
+            var orderDetailTemp = await _context.OrderDetailsTemp
+                .Where(odt => odt.User == user && odt.Product == product)
+                .FirstOrDefaultAsync();
+
+            if (orderDetailTemp == null)
+            {
+                orderDetailTemp = new OrderDetailsTemp
+                {
+                    Price = product.Price,
+                    Product = product,
+                    Quantity = 1,
+                    User = user
+                };
+
+                _context.OrderDetailsTemp.Add(orderDetailTemp);
+            }
+            else
+            {
+                orderDetailTemp.Quantity += 1;
+                _context.OrderDetailsTemp.Update(orderDetailTemp);
+            }
+
+            await _context.SaveChangesAsync();
+        }
+
+
+        public async Task AddProductToOrderTempAsync(int productId)
+        {
+
+            var product = await _context.Products.FindAsync(productId);
+            if (product == null)
+            {
+                return;
+            }
+
+            var orderDetailTemp = await _context.OrderDetailsTemp
+                .Where(odt => odt.Product == product)
+                .FirstOrDefaultAsync();
+
+            if (orderDetailTemp == null)
+            {
+                orderDetailTemp = new OrderDetailsTemp
+                {
+                    Price = product.Price,
+                    Product = product,
+                    Quantity = 1,
+                    //User = user
+                };
+
+                _context.OrderDetailsTemp.Add(orderDetailTemp);
+            }
+            else
+            {
+                orderDetailTemp.Quantity += 1;
+                _context.OrderDetailsTemp.Update(orderDetailTemp);
+            }
+
+            await _context.SaveChangesAsync();
+        }
+
+        
     }
 }

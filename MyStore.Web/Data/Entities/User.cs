@@ -34,5 +34,8 @@ namespace MyStore.Web.Data.Entities
          ErrorMessage = "Must insert the {0} correct.")]
         [Display(Name = "Value Added Tax")]
         public int VAT { get; set; }
+
+        [Display(Name = "Resale customer")]
+        public bool IsResale { get; set; }
     }
 }

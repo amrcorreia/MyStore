@@ -44,5 +44,67 @@ namespace MyStore.Web.Helpers
                 client.Disconnect(true);
             }
         }
+
+        public void SendEmailPlusAttachment(string to, string subject, string body, byte[] pdf)
+        {
+            var nameFrom = _configuration["Mail:NameFrom"];
+            var from = _configuration["Mail:From"];
+            var smtp = _configuration["Mail:Smtp"];
+            var port = _configuration["Mail:Port"];
+            var pw = _configuration["Mail:Password"];
+
+            var message = new MimeMessage();
+            message.From.Add(new MailboxAddress(nameFrom, from));
+            message.To.Add(new MailboxAddress(to, to));
+
+            message.Subject = subject;
+
+            var bodybuilder = new BodyBuilder
+            {
+                HtmlBody = body
+            };
+            bodybuilder.Attachments.Add($"order_{DateTime.Now}.pdf", pdf);
+
+            message.Body = bodybuilder.ToMessageBody();
+
+            using (var client = new SmtpClient())
+            {
+                client.Connect(smtp, int.Parse(port), false);
+                client.Authenticate(from, pw);
+                client.Send(message);
+                client.Disconnect(true);
+            }
+        }
+
+        //public void SendEmailPlusAttachment(string to, string subject, string body, byte[] pdf)
+        //{
+        //    var nameFrom = _configuration["Mail:NameFrom"];
+        //    var from = _configuration["Mail:From"];
+        //    var smtp = _configuration["Mail:Smtp"];
+        //    var port = _configuration["Mail:Port"];
+        //    var pw = _configuration["Mail:Password"];
+
+        //    var message = new MimeMessage();
+        //    message.From.Add(new MailboxAddress(nameFrom, from));
+        //    message.To.Add(new MailboxAddress(to, to));
+
+        //    message.Subject = subject;
+
+        //    var bodybuilder = new BodyBuilder
+        //    {
+        //        HtmlBody = body
+        //    };
+        //    bodybuilder.Attachments.Add($"order_{DateTime.Now}.pdf", pdf);
+
+        //    message.Body = bodybuilder.ToMessageBody();
+
+        //    using (var client = new SmtpClient())
+        //    {
+        //        client.Connect(smtp, int.Parse(port), false);
+        //        client.Authenticate(from, pw);
+        //        client.Send(message);
+        //        client.Disconnect(true);
+        //    }
+        //}
     }
 }

@@ -22,12 +22,12 @@ namespace MyStore.Web
 {
     public class Startup
     {
-        private readonly IHostingEnvironment _environment;
+        private readonly IHostingEnvironment _env;
 
-        public Startup(IConfiguration configuration, IHostingEnvironment environment)
+        public Startup(IConfiguration configuration, IHostingEnvironment env)
         {
             Configuration = configuration;
-            _environment = environment;
+            _env = env;
         }
 
         public IConfiguration Configuration { get; }
@@ -64,7 +64,7 @@ namespace MyStore.Web
 
 
 
-            if (_environment.IsDevelopment())
+            if (_env.IsDevelopment())
             {
 
                 services
@@ -86,23 +86,19 @@ namespace MyStore.Web
                     options.ClientSecret = Configuration["App:FacebookClientSecret"];
                     options.SignInScheme = IdentityConstants.ExternalScheme;
                 });
-
-                //.AddCookie(options =>
-                //{
-                //    options.Cookie.Name = ".AspNet.ExternalCookie";
-                //    options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
-                //    options.LoginPath = new PathString("/Account/Login");
-                //    options.LogoutPath = new PathString("/Account/Logout");
-                //});
             }
-
-
-
 
             //serviço responsável por fazer a ligação à base de dados
             services.AddDbContext<DataContext>(cfg =>
             {
-                cfg.UseSqlServer(this.Configuration.GetConnectionString("DefaultConnection"));
+                if (_env.IsDevelopment())
+                {
+                    cfg.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+                }
+                else
+                {
+                    cfg.UseSqlServer(Configuration.GetConnectionString("SomeeConnection"));
+                }
             });
 
             services.AddTransient<SeedDb>();
@@ -123,11 +119,12 @@ namespace MyStore.Web
 
             services.ConfigureApplicationCookie(options =>
             {
-                options.LoginPath = "/Account/NotAuthorized";
-                //options.AccessDeniedPath = "/Account/NotAuthorized";
+                //options.LoginPath = "/Account/NotAuthorized";
+                options.AccessDeniedPath = "/Account/NotAuthorized";
             });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddSession();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -150,6 +147,7 @@ namespace MyStore.Web
             app.UseStaticFiles();
             app.UseAuthentication();
             app.UseCookiePolicy();
+            app.UseSession();
 
             app.UseMvc(routes =>
             {

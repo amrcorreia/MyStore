@@ -22,6 +22,8 @@ namespace MyStore.Web.Data
 
         public DbSet<OrderDetailsTemp> OrderDetailsTemp { get; set; }
 
+        public DbSet<ContactForm> ContactForms { get; set; }
+
 
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {

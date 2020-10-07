@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -18,16 +19,19 @@ namespace MyStore.Web.Controllers
     {
         private readonly IProductRepository _productRepository;
         private readonly IUserHelper _userHelper;
+        private readonly IOrderRepository _orderRepository;
         private readonly IImageHelper _imageHelper;
         private readonly IConverterHelper _converterHelper;
 
         public ProductsController(IProductRepository productRepository,
             IImageHelper imageHelper, 
             IConverterHelper converterHelper,
-            IUserHelper userHelper)
+            IUserHelper userHelper,
+            IOrderRepository orderRepository)
         {
             _productRepository = productRepository;
             _userHelper = userHelper;
+            _orderRepository = orderRepository;
             _imageHelper = imageHelper;
             _converterHelper = converterHelper;
         }
@@ -235,6 +239,33 @@ namespace MyStore.Web.Controllers
         public IActionResult ProductNotFound()
         {
             return View();
+        }
+
+
+
+        public async Task<IActionResult> AddToOrder(int id)
+        {
+            try
+            {
+               
+                if (!User.Identity.IsAuthenticated)
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+                var user = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
+                await _orderRepository.AddProductToOrderAsync(id, user);
+
+
+                return RedirectToAction("Create", "Orders");
+            }
+            catch (Exception exception)
+            {
+
+                ModelState.AddModelError(string.Empty, exception.Message);
+            }
+
+            return RedirectToAction("Create", "Orders");
+
         }
     }
 }
